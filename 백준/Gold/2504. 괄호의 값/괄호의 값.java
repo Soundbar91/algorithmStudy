@@ -21,7 +21,6 @@ public class Main {
             else if (stack.empty()) return false;
             else {
                 char pop = stack.pop();
-
                 if (c == ')' && pop != '(' || c == ']' && pop != '[') return false;
             }
         }
@@ -37,44 +36,30 @@ public class Main {
             char c = bracket.charAt(i);
 
             if (c == '(' || c == '[') stack.push(String.valueOf(c));
-            else if (c == ')') {
-                if (Objects.equals(stack.peek(), "(")) {
-                    stack.pop();
-                    stack.push(String.valueOf(2));
-                }
-                else {
-                    int temp = 0;
-
-                    while (!Objects.equals(stack.peek(), "(")) {
-                        temp += Integer.parseInt(stack.pop());
-                    }
-                    stack.pop();
-
-                    temp *= 2;
-                    stack.push(String.valueOf(temp));
-                }
-            }
-            else {
-                if (Objects.equals(stack.peek(), "[")) {
-                    stack.pop();
-                    stack.push(String.valueOf(3));
-                }
-                else {
-                    int temp = 0;
-
-                    while (!Objects.equals(stack.peek(), "[")) {
-                        temp += Integer.parseInt(stack.pop());
-                    }
-                    stack.pop();
-
-                    temp *= 3;
-                    stack.push(String.valueOf(temp));
-                }
-            }
+            else if (c == ')') calc(stack, "(", 2);
+            else calc(stack, "[", 3);
         }
 
         for (String c : stack) result += Integer.parseInt(c);
 
         return result;
+    }
+
+    public static void calc(Stack<String> stack, String bracket, int weight) {
+        if (Objects.equals(stack.peek(), bracket)) {
+            stack.pop();
+            stack.push(String.valueOf(weight));
+        }
+        else {
+            int temp = 0;
+
+            while (!Objects.equals(stack.peek(), bracket)) {
+                temp += Integer.parseInt(stack.pop());
+            }
+            stack.pop();
+
+            temp *= weight;
+            stack.push(String.valueOf(temp));
+        }
     }
 }
