@@ -10,19 +10,16 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
         formula = br.readLine();
+        
         solve();
-
         br.close();
     }
 
     public static void solve() {
         findBracketIndex();
         makeFormula(0, formula);
-        result.remove(formula);
-
-        for (String str : result) System.out.println(str);
+        printResult();
     }
 
     public static void findBracketIndex() {
@@ -47,6 +44,11 @@ public class Main {
             makeFormula(index + 1, sb.toString());
             makeFormula(index + 1, str);
         }
+    }
+
+    public static void printResult() {
+        result.remove(formula);
+        for (String str : result) System.out.println(str);
     }
 
     public static class Pair {
