@@ -2,51 +2,56 @@ import java.io.*;
 import java.util.Stack;
 
 public class Main {
-    static String formula;
-
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        formula = br.readLine();
-
-        System.out.print(solve());
-        br.close();
-    }
-
-    public static String solve() {
-        Stack<Character> stack = new Stack<>();
         StringBuilder sb = new StringBuilder();
-        char[] charArray = formula.toCharArray();
+        Stack<Character> stack = new Stack<>();
 
-        for (char c : charArray) {
-            if (c == '(') stack.push(c);
-            else if (c == ')') {
-                while (!stack.isEmpty()) {
-                    if (stack.peek() == '(') {
+        String str = br.readLine();
+
+        for (char ch : str.toCharArray()){
+            if (ch == '('){
+                stack.push(ch);
+            }
+            else if (ch == ')'){
+                while(!stack.empty()){
+                    if (stack.peek() == '('){
                         stack.pop();
                         break;
                     }
                     sb.append(stack.pop());
                 }
             }
-            else if (c == '+' || c == '-' || c == '*' || c == '/') {
-               while (!stack.isEmpty()) {
-                   char pop = stack.peek();
-                   if (precedence(pop) >= precedence(c)) sb.append(stack.pop());
-                   else break;
-               }
-               stack.push(c);
+            else if (ch == '+' || ch == '-' || ch == '*' || ch == '/'){
+                while (!stack.empty()){
+                    char pop = stack.peek();
+                    if (precedence(ch) <= precedence(pop)){
+                        sb.append(stack.pop());
+                    }
+                    else break;
+                }
+                stack.push(ch);
             }
-            else sb.append(c);
+            else {
+                sb.append(ch);
+            }
         }
-
-        while (!stack.isEmpty()) sb.append(stack.pop());
-
-        return sb.toString();
+        while(!stack.empty()){
+            sb.append(stack.pop());
+        }
+        System.out.println(sb);
     }
 
     public static int precedence(char ch){
-        if (ch == '(' || ch == ')') return 0;
-        else if(ch == '+' || ch == '-') return 1;
-        else return 2;
+        if (ch == '(' || ch == ')'){
+            return 0;
+        }
+        else if(ch == '+' || ch == '-'){
+            return 1;
+        }
+        else if(ch == '*' || ch == '/'){
+            return 2;
+        }
+        else return -1;
     }
 }
