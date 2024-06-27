@@ -12,7 +12,6 @@ public class Main {
 
         while (T-- > 0) {
             M = Integer.parseInt(br.readLine());
-            nums = new int[M];
 
             System.out.print(solve());
         }
@@ -23,26 +22,37 @@ public class Main {
     public static String solve() throws IOException {
         StringBuilder sb = new StringBuilder();
         sb.append((M + 1) / 2).append('\n');
-
-        List<Integer> list = new ArrayList<>();
         int count = 0;
+
+        Queue<Integer> minHeap = new PriorityQueue<>();
+        Queue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
 
         for (int i = 0; i < M; i++) {
             if (i % 10 == 0) st = new StringTokenizer(br.readLine());
             int value = Integer.parseInt(st.nextToken());
 
-            list.add(value);
-            Collections.sort(list);
+            if (minHeap.size() == maxHeap.size()) maxHeap.add(value);
+            else minHeap.add(value);
+
+            if (!minHeap.isEmpty() && !maxHeap.isEmpty()) {
+                if (maxHeap.peek() > minHeap.peek()) {
+                    int maxValue = maxHeap.poll();
+                    int minValue = minHeap.poll();
+
+                    maxHeap.add(minValue);
+                    minHeap.add(maxValue);
+                }
+            }
 
             if (i % 2 == 0) {
                 if (count == 9 || i == M - 1) {
-                    sb.append(list.get(i / 2)).append('\n');
+                    sb.append(maxHeap.peek()).append('\n');
                     count = 0;
                 }
                 else {
-                    sb.append(list.get(i / 2)).append(" ");
-                    count++;
+                    sb.append(maxHeap.peek()).append(" ");
                 }
+                count++;
             }
         }
 
