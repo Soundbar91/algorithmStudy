@@ -108,15 +108,11 @@ public class Main {
     }
 
     public static void recommendProblem3(int x, int L) throws IOException {
-        if (x == 1) {
-            Problem p = problemSet.ceiling(new Problem(0, L, 0));
-            if (p == null) bw.write("-1\n");
-            else bw.write(p.index + "\n");
-        } else {
-            Problem p = problemSet.floor(new Problem(0, L, 0));
-            if (p == null) bw.write("-1\n");
-            else bw.write(p.index + "\n");
-        }
+        Problem p;
+        if (x == 1) p = problemSet.ceiling(new Problem(0, L, 0));
+        else p = problemSet.floor(new Problem(0, L, 0));
+        if (p == null) bw.write("-1\n");
+        else bw.write(p.index + "\n");
     }
 
     public static class Problem implements Comparable<Problem> {
