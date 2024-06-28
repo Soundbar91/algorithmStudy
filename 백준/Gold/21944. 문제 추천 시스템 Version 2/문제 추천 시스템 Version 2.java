@@ -7,6 +7,7 @@ public class Main {
     static TreeMap<Integer, Integer> algoMap = new TreeMap<>();
     static TreeMap<Integer, Integer> levelMap = new TreeMap<>();
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     static StringTokenizer st;
 
     public static void main(String[] args) throws IOException {
@@ -23,6 +24,7 @@ public class Main {
         }
 
         solve();
+        bw.flush();
     }
 
     public static void solve() throws IOException {
@@ -65,9 +67,7 @@ public class Main {
         Problem problem = new Problem(P, L, G);
         problemSet.add(problem);
 
-        TreeSet<Problem> temp = algoTreeSet.getOrDefault(G, new TreeSet<>());
-        temp.add(problem);
-        algoTreeSet.put(G, temp);
+        algoTreeSet.computeIfAbsent(G, k -> new TreeSet<>()).add(problem);
 
         levelMap.put(P, L);
         algoMap.put(P, G);
@@ -79,29 +79,43 @@ public class Main {
 
         Problem problem = new Problem(P, L, G);
         problemSet.remove(problem);
-        algoTreeSet.get(G).remove(problem);
+        if (algoTreeSet.containsKey(G)) {
+            algoTreeSet.get(G).remove(problem);
+            if (algoTreeSet.get(G).isEmpty()) {
+                algoTreeSet.remove(G);
+            }
+        }
         levelMap.remove(P);
         algoMap.remove(P);
     }
 
-    public static void recommendProblem(int G, int x) {
-        if (x == 1) System.out.println(algoTreeSet.get(G).last().index);
-        else System.out.println(algoTreeSet.get(G).first().index);
-    }
-
-    public static void recommendProblem2(int x) {
-        if (x == 1) System.out.println(problemSet.last().index);
-        else System.out.println(problemSet.first().index);
-    }
-
-    public static void recommendProblem3(int x, int L) {
-        if (x == 1) {
-            if (problemSet.ceiling(new Problem(0, L, 0)) == null) System.out.println(-1);
-            else System.out.println(problemSet.ceiling(new Problem(0, L, 0)).index);
+    public static void recommendProblem(int G, int x) throws IOException {
+        if (!algoTreeSet.containsKey(G) || algoTreeSet.get(G).isEmpty()) {
+            bw.write("-1\n");
+            return;
         }
-        else {
-            if (problemSet.floor(new Problem(0, L, 0)) == null) System.out.println(-1);
-            else System.out.println(problemSet.floor(new Problem(0, L, 0)).index);
+        if (x == 1) bw.write(algoTreeSet.get(G).last().index + "\n");
+        else bw.write(algoTreeSet.get(G).first().index + "\n");
+    }
+
+    public static void recommendProblem2(int x) throws IOException {
+        if (problemSet.isEmpty()) {
+            bw.write("-1\n");
+            return;
+        }
+        if (x == 1) bw.write(problemSet.last().index + "\n");
+        else bw.write(problemSet.first().index + "\n");
+    }
+
+    public static void recommendProblem3(int x, int L) throws IOException {
+        if (x == 1) {
+            Problem p = problemSet.ceiling(new Problem(0, L, 0));
+            if (p == null) bw.write("-1\n");
+            else bw.write(p.index + "\n");
+        } else {
+            Problem p = problemSet.floor(new Problem(0, L, 0));
+            if (p == null) bw.write("-1\n");
+            else bw.write(p.index + "\n");
         }
     }
 
