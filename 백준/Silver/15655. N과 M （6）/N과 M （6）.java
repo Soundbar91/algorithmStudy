@@ -35,7 +35,6 @@ public class Main {
         }
         else {
             for (int i = index; i < N; i++) {
-                if (nums[index] > nums[i]) continue;
                 if (!vistied[i]) {
                     vistied[i] = true;
                     list.add(nums[i]);
