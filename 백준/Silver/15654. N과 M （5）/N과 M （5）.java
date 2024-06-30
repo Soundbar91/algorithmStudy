@@ -19,8 +19,9 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
         nums = Arrays.stream(br.readLine().split(" "))
-                .mapToInt(Integer::parseInt).toArray();
-        Arrays.sort(nums);
+                .mapToInt(Integer::parseInt)
+                .sorted()
+                .toArray();
 
         vistied = new boolean[N];
 
