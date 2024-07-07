@@ -37,6 +37,6 @@ public class Main {
         if (n < 2) return false;
         if (n == 2) return true;
 
-        return IntStream.range(2, n).noneMatch(i -> n % i == 0);
+        return IntStream.iterate(2, i -> i <= Math.sqrt(n), i -> i + 1).noneMatch(i -> n % i == 0);
     }
 }
