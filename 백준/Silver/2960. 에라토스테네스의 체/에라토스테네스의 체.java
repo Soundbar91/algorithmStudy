@@ -23,8 +23,6 @@ class Main {
         int count = 0;
 
         for (int i = 2; i <= N; i++) {
-            if (nums[i]) continue;
-            
             for (int j = i; j <= N; j += i) {
                 if (nums[j]) continue;
 
