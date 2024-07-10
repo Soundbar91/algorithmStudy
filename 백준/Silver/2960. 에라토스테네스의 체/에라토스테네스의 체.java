@@ -24,9 +24,8 @@ class Main {
 
         for (int i = 2; i <= N; i++) {
             if (nums[i]) continue;
-            if (++count == K) return i;
-
-            for (int j = i * 2; j <= N; j += i) {
+            
+            for (int j = i; j <= N; j += i) {
                 if (nums[j]) continue;
 
                 nums[j] = true;
