@@ -1,51 +1,47 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.StringTokenizer;
 
 class Main {
-    static int N;
+    static int N, max;
     static int[] nums;
+    static int[] visited;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         N = Integer.parseInt(br.readLine());
-        nums = Arrays.stream(br.readLine().split(" "))
-                        .sorted().mapToInt(Integer::parseInt).toArray();
+        nums = new int[N];
 
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++) {
+            nums[i] = Integer.parseInt(st.nextToken());
+            max = Math.max(max, nums[i]);
+        }
+        visited = new int[max + 1];
+
+        valid();
         System.out.print(solve());
         br.close();
     }
 
+    public static void valid() {
+        for (int i = 2; i <= max; i++) {
+            if (visited[i] == 1) continue;
+            for (int j = i * 2; j <= max; j += i) {
+                visited[j] = 1;
+            }
+        }
+    }
+
     public static long solve() {
         long result = 1;
-        List<Integer> list = new ArrayList<>();
 
-        for (int i = 0; i < N; i++) {
-            boolean update = false;
-            if (list.contains(nums[i])) continue;
-
-            if (nums[i] == 2) {
-                result *= nums[i];
-                list.add(nums[i]);
-                continue;
-            }
-
-            for (int j = 2; j <= Math.sqrt(nums[i]); j++) {
-                if (nums[i] % j == 0) {
-                    update = true;
-                    break;
-                }
-            }
-
-            if (!update) {
-                list.add(nums[i]);
-                result *= nums[i];
-            }
+        for (int num : nums) {
+            if (visited[num] == 1) continue;
+            result *= num;
+            visited[num] = 1;
         }
 
         return result == 1 ? -1 : result;
