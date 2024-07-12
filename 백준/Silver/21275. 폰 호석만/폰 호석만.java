@@ -24,10 +24,12 @@ class Main {
         char[] left = A.toCharArray();
         char[] right = B.toCharArray();
 
-        for (int i = 2; i <= 36; i++) {
+        int indexLeft = find(left) + 1, indexRight = find(right) + 1;
+
+        for (int i = indexLeft; i <= 36; i++) {
             long leftSum = calc(left, i);
 
-            for (int j = 2; j <= 36; j++) {
+            for (int j = indexRight; j <= 36; j++) {
                 if (i == j) continue;
 
                 long rightSum = calc(right, j);
@@ -47,6 +49,17 @@ class Main {
 
             result += (num * index);
             index *= weight;
+        }
+
+        return result;
+    }
+
+    public static int find(char[] arr) {
+        int result = 0;
+
+        for (char c : arr) {
+            int num = c >= 'a' ? c - 'a' + 10 : c - '0';
+            result = Math.max(result, num);
         }
 
         return result;
