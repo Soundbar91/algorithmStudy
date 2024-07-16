@@ -58,7 +58,7 @@ class Main {
                 int nx = cur[0] + dx[i];
                 int ny = cur[1] + dy[i];
 
-                if (!isValid(nx, ny) || visited[nx][ny] || map[nx][ny] == 0 || map[nx][ny] == -1) continue;
+                if (!isValid(nx, ny) || visited[nx][ny] || map[nx][ny] != 1) continue;
                 queue.add(new int[]{nx, ny});
             }
         }
