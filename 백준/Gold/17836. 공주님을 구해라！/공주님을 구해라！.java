@@ -50,20 +50,17 @@ class Main {
             visited[cur.x][cur.y] = true;
 
             if (map[cur.x][cur.y] == 2) {
-                int nx = (N - 1) - cur.x;
-                int ny = (M - 1) - cur.y;
-                int time = cur.time + nx + ny;
-                if (time > T) continue;
-                else result = Math.min(result, time);
+                int time = cur.time + (N - 1 - cur.x) + (M - 1 - cur.y);
+                if (time <= T) result = Math.min(result, time);
             }
 
             for (int i = 0; i < 4; i++) {
                 int nx = cur.x + dx[i];
                 int ny = cur.y + dy[i];
 
-                if (!valid(nx, ny) || visited[nx][ny] || map[nx][ny] == 1) continue;
-
-                queue.add(new Player(nx, ny, cur.time + 1));
+                if (valid(nx, ny) && !visited[nx][ny] && map[nx][ny] != 1) {
+                    queue.add(new Player(nx, ny, cur.time + 1));
+                }
             }
         }
 
