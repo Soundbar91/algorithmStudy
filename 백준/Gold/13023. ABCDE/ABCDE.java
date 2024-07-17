@@ -16,7 +16,8 @@ class Main {
 
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
-
+        visited = new boolean[N];
+        
         for (int i = 0; i < N; i++) map.add(new ArrayList<>());
         while (M-- > 0) {
             st = new StringTokenizer(br.readLine());
@@ -28,11 +29,7 @@ class Main {
             map.get(b).add(a);
         }
 
-        for (int i = 0; i < N; i++) {
-            visited = new boolean[N];
-            visited[i] = true;
-            solve(i, 0);
-        }
+        for (int i = 0; i < N; i++) solve(i, 0);
 
         System.out.print(0);
         br.close();
@@ -44,6 +41,7 @@ class Main {
             System.exit(0);
         }
         else {
+            visited[cur] = true;
             for (int next : map.get(cur)) {
                 if (!visited[next]) {
                     visited[next] = true;
@@ -51,6 +49,7 @@ class Main {
                     visited[next] = false;
                 }
             }
+            visited[cur] = false;
         }
     }
 }
