@@ -16,6 +16,8 @@ class Main {
         M = Integer.parseInt(st.nextToken());
         N = Integer.parseInt(st.nextToken());
         List<int[]> list = new ArrayList<>();
+        int noRipeTomato = 0;
+        int noTomato = 0;
 
         map = new int[N][M];
         for (int i = 0; i < N; i++) {
@@ -23,23 +25,24 @@ class Main {
             for (int j = 0; j < M; j++) {
                 map[i][j] = Integer.parseInt(st.nextToken());
                 if (map[i][j] == 1) list.add(new int[]{i, j});
+                else if (map[i][j] == 0) noRipeTomato++;
+                else noTomato++;
             }
         }
 
-        if (list.size() == N * M) System.out.print(0);
-        else {
-            bfs(list);
-            System.out.print(print());
-        }
+        if (list.size() == N * M - noTomato) System.out.print(0);
+        else System.out.print(bfs(list, noRipeTomato));
 
         br.close();
     }
 
-    public static void bfs(List<int[]> list) {
+    public static int bfs(List<int[]> list, int noRipeTomato) {
         Queue<int[]> queue = new LinkedList<>(list);
+        int day = -1;
 
         while (!queue.isEmpty()) {
             int[] cur = queue.poll();
+            day = Math.max(day, map[cur[0]][cur[1]]);
 
             for (int i = 0; i < 4; i++) {
                 int x = cur[0] + dx[i];
@@ -48,23 +51,14 @@ class Main {
                 if (!valid(x, y) || map[x][y] != 0) continue;
                 map[x][y] = map[cur[0]][cur[1]] + 1;
                 queue.add(new int[]{x, y});
+                noRipeTomato--;
             }
         }
+
+        return noRipeTomato == 0 ? day - 1 : -1;
     }
 
     public static boolean valid(int x, int y) {
         return x >= 0 && x < N && y >= 0 && y < M;
-    }
-
-    public static int print() {
-        int result = -1;
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                if (map[i][j] == 0) return -1;
-                else result = Math.max(result, map[i][j]);
-            }
-        }
-
-        return result - 1;
     }
 }
