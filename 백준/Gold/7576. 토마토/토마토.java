@@ -17,7 +17,6 @@ class Main {
         N = Integer.parseInt(st.nextToken());
         List<int[]> list = new ArrayList<>();
         int noRipeTomato = 0;
-        int noTomato = 0;
 
         map = new int[N][M];
         for (int i = 0; i < N; i++) {
@@ -26,32 +25,35 @@ class Main {
                 map[i][j] = Integer.parseInt(st.nextToken());
                 if (map[i][j] == 1) list.add(new int[]{i, j});
                 else if (map[i][j] == 0) noRipeTomato++;
-                else noTomato++;
             }
         }
 
-        if (list.size() == N * M - noTomato) System.out.print(0);
-        else System.out.print(bfs(list, noRipeTomato));
+        if (noRipeTomato == 0) System.out.print(0);
+        else System.out.print(solve(list, noRipeTomato));
 
         br.close();
     }
 
-    public static int bfs(List<int[]> list, int noRipeTomato) {
+    public static int solve(List<int[]> list, int noRipeTomato) {
         Queue<int[]> queue = new LinkedList<>(list);
-        int day = -1;
+        int day = 0;
 
         while (!queue.isEmpty()) {
-            int[] cur = queue.poll();
-            day = Math.max(day, map[cur[0]][cur[1]]);
+            day++;
+            int size = queue.size();
 
-            for (int i = 0; i < 4; i++) {
-                int x = cur[0] + dx[i];
-                int y = cur[1] + dy[i];
+            while (size-- > 0) {
+                int[] cur = queue.poll();
 
-                if (!valid(x, y) || map[x][y] != 0) continue;
-                map[x][y] = map[cur[0]][cur[1]] + 1;
-                queue.add(new int[]{x, y});
-                noRipeTomato--;
+                for (int i = 0; i < 4; i++) {
+                    int x = cur[0] + dx[i];
+                    int y = cur[1] + dy[i];
+
+                    if (!valid(x, y) || map[x][y] != 0) continue;
+                    map[x][y] = map[cur[0]][cur[1]] + 1;
+                    queue.add(new int[]{x, y});
+                    noRipeTomato--;
+                }
             }
         }
 
