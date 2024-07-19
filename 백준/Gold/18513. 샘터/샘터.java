@@ -5,6 +5,7 @@ import java.util.*;
 
 class Main {
     static int N, K;
+    static long result;
     static Queue<int[]> queue = new LinkedList<>();
     static Set<Integer> set = new HashSet<>();
 
@@ -27,25 +28,20 @@ class Main {
     }
 
     public static long solve() {
-        long result = 0;
-
         while (K != 0) {
             int[] cur = queue.poll();
 
-            if (!set.contains(cur[0] - 1)) {
-                K--;
-                result += cur[1] + 1;
-                queue.add(new int[]{cur[0] - 1, cur[1] + 1});
-                set.add(cur[0] - 1);
-            }
-            if (!set.contains(cur[0] + 1) && K > 0) {
-                K--;
-                result += cur[1] + 1;
-                queue.add(new int[]{cur[0] + 1, cur[1] + 1});
-                set.add(cur[0] + 1);
-            }
+            if (!set.contains(cur[0] - 1)) build(cur[0] - 1, cur[1] + 1);
+            if (!set.contains(cur[0] + 1) && K > 0) build(cur[0] + 1, cur[1] + 1);
         }
 
         return result;
+    }
+
+    public static void build(int cur, int weight) {
+        K--;
+        result += weight;
+        queue.add(new int[]{cur, weight});
+        set.add(cur);
     }
 }
