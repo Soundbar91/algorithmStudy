@@ -4,11 +4,11 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 class Main {
-    static int N, L, R, day, index;
+    static int N, L, R;
     static int[] dx = {0, 0, -1, 1};
     static int[] dy = {-1, 1, 0, 0};
     static int[][] map;
-    static int[][] union;
+    static List<int[]> list;
     static boolean[][] visited;
 
     public static void main(String[] args) throws IOException {
@@ -27,47 +27,44 @@ class Main {
             }
         }
 
-        while (solve()) {
-            movePeople();
-            day++;
-        }
-
-        System.out.print(day);
+        System.out.print(solve());
         br.close();
     }
 
-    public static boolean solve() {
-        union = new int[N][N];
-        visited = new boolean[N][N];
-        index = 1;
-        boolean update = false;
+    public static int solve() {
+        int day = 0;
+        while (true) {
+            visited = new boolean[N][N];
+            boolean move = false;
 
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                if (!visited[i][j]) {
-                    if (bfs(i, j, index)) {
-                        update = true;
-                        index++;
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < N; j++) {
+                    if (!visited[i][j]) {
+                        int sum = bfs(i, j);
+                        if (list.size() > 1) {
+                            move = true;
+                            movePeople(sum);
+                        }
                     }
-                    else union[i][j] = 0;
                 }
             }
-        }
 
-        return update;
+            if (!move) return day;
+            day++;
+        }
     }
 
-    public static boolean bfs(int x, int y, int index) {
+    public static int bfs(int x, int y) {
+        list = new ArrayList<>();
+        list.add(new int[]{x, y});
+        int sum = map[x][y];
+        visited[x][y] = true;
+
         Queue<int[]> queue = new LinkedList<>();
         queue.add(new int[]{x, y});
-        union[x][y] = index;
-        boolean update = false;
 
         while (!queue.isEmpty()) {
             int[] cur = queue.poll();
-
-            if (visited[cur[0]][cur[1]]) continue;
-            visited[cur[0]][cur[1]] = true;
 
             for (int i = 0; i < 4; i++) {
                 int nx = cur[0] + dx[i];
@@ -77,48 +74,23 @@ class Main {
 
                 int value = Math.abs(map[nx][ny] - map[cur[0]][cur[1]]);
                 if (value >= L && value <= R) {
-                    update = true;
-                    union[nx][ny] = index;
                     queue.add(new int[]{nx, ny});
+                    list.add(new int[]{nx, ny});
+                    sum += map[nx][ny];
+                    visited[nx][ny] = true;
                 }
             }
         }
 
-        return update;
+        return sum;
     }
 
     public static boolean valid(int x, int y) {
         return x >= 0 && x < N && y >= 0 && y < N;
     }
 
-    public static void movePeople() {
-        List<List<int[]>> unionLists = new ArrayList<>();
-        for (int i = 0; i < index; i++) unionLists.add(new ArrayList<>());
-
-        int[] total = new int[index];
-        for (int i = 1; i < index; i++) {
-            int sum = 0;
-
-            for (int j = 0; j < N; j++) {
-                for (int k = 0; k < N; k++) {
-                    if (union[j][k] == i) {
-                        unionLists.get(i).add(new int[]{j, k});
-                        sum += map[j][k];
-                    }
-                }
-            }
-            total[i] = sum / unionLists.get(i).size();
-        }
-
-        for (int i = 1; i < index; i++) {
-            List<int[]> unionList = unionLists.get(i);
-
-            for (int[] union : unionList) {
-                int x = union[0];
-                int y = union[1];
-
-                map[x][y] = total[i];
-            }
-        }
+    public static void movePeople(int sum) {
+        int people = sum / list.size();
+        for (int[] country : list) map[country[0]][country[1]] = people;
     }
 }
