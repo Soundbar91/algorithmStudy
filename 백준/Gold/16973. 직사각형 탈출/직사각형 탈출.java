@@ -1,9 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.util.*;
 
 class Main {
     static int N, M, H, W, Sr, Sc, Fr, Fc;
@@ -11,6 +9,7 @@ class Main {
     static int[] dy = {1, -1, 0, 0};
     static int[][] map;
     static boolean[][] visited;
+    static List<int[]> coordinates = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -25,6 +24,7 @@ class Main {
             st = new StringTokenizer(br.readLine());
             for (int j = 1; j <= M; j++) {
                 map[i][j] = Integer.parseInt(st.nextToken());
+                if (map[i][j] == 1) coordinates.add(new int[]{i, j});
             }
         }
 
@@ -41,28 +41,26 @@ class Main {
     }
 
     public static int solve() {
-        Queue<Rectangle> queue = new LinkedList<>();
-        queue.add(new Rectangle(Sr, Sc, Sr + H - 1, Sc + W - 1, 0));
+        Queue<int[]> queue = new LinkedList<>();
+        queue.add(new int[]{Sr, Sc});
 
         while (!queue.isEmpty()) {
-            Rectangle cur = queue.poll();
+            int[] cur = queue.poll();
 
-            if (cur.Sr == Fr && cur.Sc == Fc) return cur.count;
+            if (cur[0] == Fr && cur[1] == Fc) return map[cur[0]][cur[1]];
 
-            if (visited[cur.Sr][cur.Sc]) continue;
-            visited[cur.Sr][cur.Sc] = true;
+            if (visited[cur[0]][cur[1]]) continue;
+            visited[cur[0]][cur[1]] = true;
 
             for (int i = 0; i < 4; i++) {
-                int Sx = cur.Sr + dx[i];
-                int Sy = cur.Sc + dy[i];
-                int Ex = cur.Er + dx[i];
-                int Ey = cur.Ec + dy[i];
+                int x = cur[0] + dx[i];
+                int y = cur[1] + dy[i];
 
-                if (!valid(Sx, Sy) || visited[Sx][Sy] || map[Sx][Sy] == 1) continue;
-                if (!valid(Ex, Ey) || map[Ex][Ey] == 1) continue;
-
-                if (check(Sx, Sy, Ex, Ey))
-                    queue.add(new Rectangle(Sx, Sy, Ex, Ey, cur.count + 1));
+                if (!valid(x, y) || visited[x][y]) continue;
+                if (check(x, y)) {
+                    map[x][y] = map[cur[0]][cur[1]] + 1;
+                    queue.add(new int[]{x, y});
+                }
             }
         }
 
@@ -70,26 +68,16 @@ class Main {
     }
 
     public static boolean valid(int x, int y) {
-        return x > 0 && x <= N && y > 0 && y <= M;
+        return (x > 0 && x <= N && y > 0 && y <= M) && (x + H - 1 <= N && y + W - 1 <= M);
     }
 
-    public static boolean check(int Sx, int Sy, int Ex, int Ey) {
-        for (int i = Sx; i <= Ex; i++) if (map[i][Sy] == 1) return false;
-        for (int i = Sy; i <= Ey; i++) if (map[Sx][i] == 1) return false;
-        for (int i = Ex; i >= Sx; i--) if (map[i][Ey] == 1) return false;
-        for (int i = Ey; i >= Sy; i--) if (map[Ex][i] == 1) return false;
-        return true;
-    }
-
-    public static class Rectangle {
-        int Sr, Sc, Er, Ec, count;
-
-        public Rectangle(int sr, int sc, int er, int ec, int count) {
-            Sr = sr;
-            Sc = sc;
-            Er = er;
-            Ec = ec;
-            this.count = count;
+    public static boolean check(int x, int y) {
+        for (int[] coordinate : coordinates) {
+            if (coordinate[0] >= x && coordinate[0] <= x + H - 1
+                    && coordinate[1] >= y && coordinate[1] <= y + W - 1)
+                return false;
         }
+
+        return true;
     }
 }
