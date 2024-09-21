@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 class Main {
-    static int n, m, a, b;
+    static int n, m, start, end, result = -1;
     static boolean[] visited;
     static List<List<Integer>> list = new ArrayList<>();
 
@@ -15,11 +15,12 @@ class Main {
         StringTokenizer st;
 
         n = Integer.parseInt(br.readLine());
+        visited = new boolean[n + 1];
         for (int i = 0; i <= n; i++) list.add(new ArrayList<>());
 
         st = new StringTokenizer(br.readLine());
-        a = Integer.parseInt(st.nextToken());
-        b = Integer.parseInt(st.nextToken());
+        start = Integer.parseInt(st.nextToken());
+        end = Integer.parseInt(st.nextToken());
 
         m = Integer.parseInt(br.readLine());
 
@@ -32,42 +33,22 @@ class Main {
             list.get(y).add(x);
         }
 
-        for (int i : list.get(a)) {
-            visited = new boolean[n + 1];
-            visited[i] = true;
-            int solve = solve(i, b, 1);
-            if (solve != -1) {
-                System.out.print(solve);
-                System.exit(0);
-            }
-        }
-
-        for (int i : list.get(b)) {
-            visited = new boolean[n + 1];
-            visited[i] = true;
-            int solve = solve(i, a, 1);
-            if (solve != -1) {
-                System.out.print(solve);
-                System.exit(0);
-            }
-        }
-
-        System.out.print(-1);
+        solve(start, end, 0);
+        System.out.print(result);
         br.close();
     }
 
-    public static int solve(int x, int y, int depth) {
-        if (x == y) return depth;
-        else {
-            for (int i : list.get(x)) {
-                if (!visited[i]) {
-                    visited[i] = true;
-                    int result = solve(i, y, depth + 1);
-                    if (result != -1) return result;
-                    visited[i] = false;
-                }
+    public static void solve(int start, int end, int depth) {
+        if (start == end) {
+            result = depth;
+            return;
+        }
+
+        visited[start] = true;
+        for (int next : list.get(start)) {
+            if (!visited[next]) {
+                solve(next, end, depth + 1);
             }
-            return -1;
         }
     }
 }
