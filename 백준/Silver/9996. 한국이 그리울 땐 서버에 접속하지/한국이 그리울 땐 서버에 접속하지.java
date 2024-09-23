@@ -3,7 +3,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 class Main {
-    static int N, index;
+    static int N;
     static String pattern;
     static String[] patterns;
 
