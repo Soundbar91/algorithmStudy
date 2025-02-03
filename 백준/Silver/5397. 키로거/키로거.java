@@ -37,9 +37,8 @@ class Main {
 
             StringBuilder sb = new StringBuilder();
             while (!front.isEmpty()) {
-                sb.append(front.pop());
+                back.add(front.pop());
             }
-            sb.reverse();
             while (!back.isEmpty()) {
                 sb.append(back.pop());
             }
