@@ -5,11 +5,11 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
-class Main {
+public class Main {
     static int N, M;
-    static int[] dx = {0, 0, -1, 1};
-    static int[] dy = {1, -1, 0, 0};
-    static int[][] map;
+    static int[] dx = {-1, 1, 0, 0};
+    static int[] dy = {0, 0, -1, 1};
+    static int[][] miro;
     static boolean[][] visited;
 
     public static void main(String[] args) throws IOException {
@@ -18,42 +18,59 @@ class Main {
 
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
+        miro = new int[N][M];
         visited = new boolean[N][M];
 
-        map = new int[N][M];
         for (int i = 0; i < N; i++) {
-            String str = br.readLine();
+            String input = br.readLine();
             for (int j = 0; j < M; j++) {
-                map[i][j] = str.charAt(j) - '0';
+                miro[i][j] = input.charAt(j) - '0';
             }
         }
 
-        System.out.print(solve());
+        System.out.print(bfs());
         br.close();
     }
 
-    public static int solve() {
-        Queue<int[]> queue = new LinkedList<>();
-        queue.add(new int[]{0, 0});
+    public static int bfs() {
+        Point start = new Point(0, 0, 1);
+        Queue<Point> queue = new LinkedList<>();
+        visited[start.x][start.y] = true;
+        queue.offer(start);
 
         while (!queue.isEmpty()) {
-            int[] cur = queue.poll();
+            Point current = queue.poll();
 
-            if (visited[cur[0]][cur[1]]) continue;
-            visited[cur[0]][cur[1]] = true;
+            if (current.x == N - 1 && current.y == M - 1) {
+                return current.cost;
+            }
 
             for (int i = 0; i < 4; i++) {
-                int nx = cur[0] + dx[i];
-                int ny = cur[1] + dy[i];
+                int nx = current.x + dx[i];
+                int ny = current.y + dy[i];
 
-                if (nx < 0 || ny < 0 || nx >= N || ny >= M) continue;
-                if (map[nx][ny] != 0 && !visited[nx][ny]) {
-                    map[nx][ny] = map[cur[0]][cur[1]] + 1;
-                    queue.add(new int[]{nx, ny});
-                }
+                if (!valid(nx, ny) || visited[nx][ny] || miro[nx][ny] == 0) continue;
+                visited[nx][ny] = true;
+                queue.add(new Point(nx, ny, current.cost + 1));
             }
         }
 
-        return map[N - 1][M - 1];
+        return -1;
+    }
+
+    public static boolean valid(int x, int y) {
+        return x >= 0 && x < N && y >= 0 && y < M;
+    }
+
+    public static class Point {
+        int x;
+        int y;
+        int cost;
+
+        public Point(int x, int y, int cost) {
+            this.x = x;
+            this.y = y;
+            this.cost = cost;
+        }
     }
 }
