@@ -1,13 +1,16 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
-class Main {
+public class Main {
     static int M, N;
-    static int[] dx = {0, 0, -1, 1};
-    static int[] dy = {-1, 1, 0, 0};
-    static int[][] map;
+    static int[] dx = {-1, 1, 0, 0};
+    static int[] dy = {0, 0, -1, 1};
+    static int[][] tomato;
+    static Queue<int[]> queue = new LinkedList<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -15,49 +18,51 @@ class Main {
 
         M = Integer.parseInt(st.nextToken());
         N = Integer.parseInt(st.nextToken());
-        List<int[]> list = new ArrayList<>();
-        int noRipeTomato = 0;
+        tomato = new int[N][M];
 
-        map = new int[N][M];
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < M; j++) {
-                map[i][j] = Integer.parseInt(st.nextToken());
-                if (map[i][j] == 1) list.add(new int[]{i, j});
-                else if (map[i][j] == 0) noRipeTomato++;
+                tomato[i][j] = Integer.parseInt(st.nextToken());
+                if (tomato[i][j] == 1) queue.add(new int[]{i, j});
             }
         }
 
-        if (noRipeTomato == 0) System.out.print(0);
-        else System.out.print(solve(list, noRipeTomato));
-
+        System.out.print(bfs());
         br.close();
     }
 
-    public static int solve(List<int[]> list, int noRipeTomato) {
-        Queue<int[]> queue = new LinkedList<>(list);
+    public static int bfs() {
         int day = 0;
 
         while (!queue.isEmpty()) {
-            day++;
-            int size = queue.size();
-
-            while (size-- > 0) {
+            for (int i = queue.size(); i > 0; i--) {
                 int[] cur = queue.poll();
 
-                for (int i = 0; i < 4; i++) {
-                    int x = cur[0] + dx[i];
-                    int y = cur[1] + dy[i];
+                for (int j = 0; j < 4; j++) {
+                    int nx = cur[0] + dx[j];
+                    int ny = cur[1] + dy[j];
 
-                    if (!valid(x, y) || map[x][y] != 0) continue;
-                    map[x][y] = map[cur[0]][cur[1]] + 1;
-                    queue.add(new int[]{x, y});
-                    noRipeTomato--;
+                    if (!valid(nx, ny) || tomato[nx][ny] != 0) continue;
+                    queue.add(new int[]{nx, ny});
+                    tomato[nx][ny] = 1;
+                }
+            }
+            if (!queue.isEmpty()) day++;
+        }
+
+        return searchZero() ? -1 : day;
+    }
+
+    public static boolean searchZero() {
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                if (tomato[i][j] == 0) {
+                    return true;
                 }
             }
         }
-
-        return noRipeTomato == 0 ? day - 1 : -1;
+        return false;
     }
 
     public static boolean valid(int x, int y) {
