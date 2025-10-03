@@ -29,7 +29,7 @@ public class Main {
         long right = nums[K - 1];
 
         while (left <= right) {
-            long mid = (left + right) / 2;
+            long mid = left + (right - left) / 2;
             long count = count(mid);
 
             if (count < N) right = mid - 1;
