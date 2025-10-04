@@ -13,8 +13,8 @@ public class Main {
     static char[][] maze;
     static int[][] jihoon;
     static int[][] fire;
-    static Queue<JiHoon> jiHoonQueue = new LinkedList<>();
-    static Queue<Fire> fireQueue = new LinkedList<>();
+    static Queue<int[]> jiHoonQueue = new LinkedList<>();
+    static Queue<int[]> fireQueue = new LinkedList<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -36,86 +36,63 @@ public class Main {
             for (int j = 0; j < C; j++) {
                 maze[i][j] = input.charAt(j);
                 if (maze[i][j] == 'J') {
-                    jiHoonQueue.add(new JiHoon(i, j, 0));
+                    jiHoonQueue.add(new int[] {i, j});
                     jihoon[i][j] = 0;
                 }
                 if (maze[i][j] == 'F') {
-                    fireQueue.add(new Fire(i, j, 0));
+                    fireQueue.add(new int[] {i, j});
                     fire[i][j] = 0;
                 }
             }
         }
 
-        System.out.print(solve());
+        solve();
         br.close();
     }
 
-    public static String solve() {
+    public static void solve() {
         fireBfs();
-        return jihoonBfs();
+        jihoonBfs();
     }
 
     public static void fireBfs() {
         while (!fireQueue.isEmpty()) {
-            Fire cur = fireQueue.poll();
+            int[] cur = fireQueue.poll();
 
             for (int i = 0; i < 4; i++) {
-                int nx = cur.x + dx[i];
-                int ny = cur.y + dy[i];
+                int nx = cur[0] + dx[i];
+                int ny = cur[1] + dy[i];
 
-                if (!valid(nx, ny) || maze[nx][ny] == '#' || fire[nx][ny] >= 0) continue;
-                fire[nx][ny] = fire[cur.x][cur.y] + 1;
-                fireQueue.add(new Fire(nx, ny, cur.time + 1));
+                if (valid(nx, ny) || maze[nx][ny] == '#' || fire[nx][ny] >= 0) continue;
+                fire[nx][ny] = fire[cur[0]][cur[1]] + 1;
+                fireQueue.add(new int[] {nx, ny});
             }
         }
     }
 
-    public static String jihoonBfs() {
+    public static void jihoonBfs() {
         while (!jiHoonQueue.isEmpty()) {
-            JiHoon cur = jiHoonQueue.poll();
+            int[] cur = jiHoonQueue.poll();
 
             for (int i = 0; i < 4; i++) {
-                int nx = cur.x + dx[i];
-                int ny = cur.y + dy[i];
+                int nx = cur[0] + dx[i];
+                int ny = cur[1] + dy[i];
 
-                if (!valid(nx, ny)) {
-                    return String.valueOf(cur.time + 1);
+                if (valid(nx, ny)) {
+                    System.out.print(jihoon[cur[0]][cur[1]] + 1);
+                    return ;
                 }
 
-                if (maze[nx][ny] != '.' || jihoon[nx][ny] != -1 || (fire[nx][ny] != -1 && fire[nx][ny] <= jihoon[cur.x][cur.y] + 1)) continue;
-                jihoon[nx][ny] = jihoon[cur.x][cur.y] + 1;
-                jiHoonQueue.add(new JiHoon(nx, ny, cur.time + 1));
+                if (maze[nx][ny] != '.' || jihoon[nx][ny] != -1 || (fire[nx][ny] != -1 && fire[nx][ny] <= jihoon[cur[0]][cur[1]] + 1)) continue;
+                jihoon[nx][ny] = jihoon[cur[0]][cur[1]] + 1;
+                jiHoonQueue.add(new int[] {nx, ny});
             }
         }
 
-        return "IMPOSSIBLE";
+        System.out.print("IMPOSSIBLE");
     }
 
     public static boolean valid(int x, int y) {
-        return x >= 0 && x < R && y >= 0 && y < C;
-    }
-
-    public static class JiHoon {
-        int x;
-        int y;
-        int time;
-
-        public JiHoon(int x, int y, int time) {
-            this.x = x;
-            this.y = y;
-            this.time = time;
-        }
-    }
-
-    public static class Fire {
-        int x;
-        int y;
-        int time;
-
-        public Fire(int x, int y, int time) {
-            this.x = x;
-            this.y = y;
-            this.time = time;
-        }
+        return x < 0 || x >= R || y < 0 || y >= C;
     }
 }
