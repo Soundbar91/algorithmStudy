@@ -80,10 +80,10 @@ public class Main {
                 }
             }
 
-            time++;
+            if (!queue.isEmpty()) time++;
         }
 
-        return time - 1;
+        return time;
     }
 
     public static boolean valid(int x, int y) {
