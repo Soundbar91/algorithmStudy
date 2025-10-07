@@ -66,8 +66,7 @@ public class Main {
         int time = 0;
 
         while (!queue.isEmpty()) {
-            int size = queue.size();
-            for (int i = 0; i < size; i++) {
+            for (int i = queue.size(); i > 0; i--) {
                 int[] cur = queue.poll();
 
                 for (int j = 0; j < 4; j++) {
