@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Stack;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -61,7 +62,8 @@ public class Main {
         while (!queue.isEmpty()) {
             Node cur = queue.poll();
 
-            if (dist[cur.v] != cur.w) continue;
+            if (dist[cur.v] != cur.w)
+                continue;
 
             for (Node next : graph.get(cur.v)) {
                 if (dist[next.v] <= dist[cur.v] + next.w) continue;
@@ -74,23 +76,17 @@ public class Main {
 
     public static void print() {
         System.out.println(dist[end]);
-        int prevIndex = end;
-        List<Integer> list = new ArrayList<>();
-        while (true) {
-            if (prev[prevIndex] == 0) {
-                list.add(prevIndex);
-                break;
-            }
-            else {
-                list.add(prevIndex);
-                prevIndex = prev[prevIndex];
-            }
-        }
-        System.out.println(list.size());
 
-        for (int i = list.size() - 1; i >= 0; i--) {
-            System.out.print(list.get(i) + " ");
+        int index = end;
+        Stack<Integer> stack = new Stack<>();
+
+        while (index != 0) {
+            stack.push(index);
+            index = prev[index];
         }
+
+        System.out.println(stack.size());
+        while (!stack.isEmpty()) System.out.print(stack.pop() + " ");
     }
 
     public static class Node implements Comparable<Node> {
