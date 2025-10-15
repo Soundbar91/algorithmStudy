@@ -10,7 +10,7 @@ public class Main {
     static int[] dx = {-1, 1, 0, 0};
     static int[] dy = {0, 0, -1, 1};
     static int[][] tomato;
-    static Queue<int[]> queue = new LinkedList<>();
+    static Queue<Tomato> queue = new LinkedList<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -24,7 +24,7 @@ public class Main {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < M; j++) {
                 tomato[i][j] = Integer.parseInt(st.nextToken());
-                if (tomato[i][j] == 1) queue.add(new int[]{i, j});
+                if (tomato[i][j] == 1) queue.add(new Tomato(i, j, 0));
             }
         }
 
@@ -36,19 +36,17 @@ public class Main {
         int day = 0;
 
         while (!queue.isEmpty()) {
-            for (int i = queue.size(); i > 0; i--) {
-                int[] cur = queue.poll();
+            Tomato cur = queue.poll();
+            day = cur.day;
 
-                for (int j = 0; j < 4; j++) {
-                    int nx = cur[0] + dx[j];
-                    int ny = cur[1] + dy[j];
+            for (int j = 0; j < 4; j++) {
+                int nx = cur.x + dx[j];
+                int ny = cur.y + dy[j];
 
-                    if (!valid(nx, ny) || tomato[nx][ny] != 0) continue;
-                    queue.add(new int[]{nx, ny});
-                    tomato[nx][ny] = 1;
-                }
+                if (!valid(nx, ny) || tomato[nx][ny] != 0) continue;
+                queue.add(new Tomato(nx, ny, cur.day + 1));
+                tomato[nx][ny] = 1;
             }
-            if (!queue.isEmpty()) day++;
         }
 
         return searchZero() ? -1 : day;
@@ -67,5 +65,17 @@ public class Main {
 
     public static boolean valid(int x, int y) {
         return x >= 0 && x < N && y >= 0 && y < M;
+    }
+
+    public static class Tomato {
+        int x;
+        int y;
+        int day;
+
+        public Tomato(int x, int y, int day) {
+            this.x = x;
+            this.y = y;
+            this.day = day;
+        }
     }
 }
