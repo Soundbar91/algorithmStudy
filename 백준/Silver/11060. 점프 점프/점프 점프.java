@@ -1,14 +1,12 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class Main {
     static int N;
     static int[] nums;
-    static boolean[] visited;
+    static int[] dp;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -17,47 +15,26 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
 
         nums = new int[N];
-        visited = new boolean[N];
+        dp = new int[N];
 
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
             nums[i] = Integer.parseInt(st.nextToken());
+            dp[i] = 987654321;
         }
 
-        bfs();
+        dp[0] = 0;
+        solve();
+        System.out.print(dp[N - 1] == 987654321 ? -1 : dp[N - 1]);
         br.close();
     }
 
-    public static void bfs() {
-        Queue<JaeHwan> queue = new LinkedList<>();
-        queue.add(new JaeHwan(0 ,0));
-        visited[0] = true;
-
-        while (!queue.isEmpty()) {
-            JaeHwan cur = queue.poll();
-
-            if (cur.index == N - 1) {
-                System.out.print(cur.jump);
-                return ;
+    public static void solve() {
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j <= nums[i]; j++) {
+                if (i + j >= N) continue;
+                dp[i + j] = Math.min(dp[i + j], dp[i] + 1) ;
             }
-
-            for (int i = 0; i <= nums[cur.index]; i++) {
-                if (cur.index + i >= N || visited[cur.index + i]) continue;
-                queue.add(new JaeHwan(cur.index + i, cur.jump + 1));
-                visited[cur.index + i] = true;
-            }
-        }
-
-        System.out.print(-1);
-    }
-
-    public static class JaeHwan {
-        int index;
-        int jump;
-
-        public JaeHwan(int index, int jump) {
-            this.index = index;
-            this.jump = jump;
         }
     }
 }
