@@ -60,6 +60,10 @@ public class Main {
             }
 
             bfs();
+            if (result == 12) {
+                System.out.print(result);
+                System.exit(0);
+            }
         } else {
             for (int i = 0; i < 4; i++) {
                 mode[depth] = i;
