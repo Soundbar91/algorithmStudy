@@ -1,35 +1,36 @@
+import java.util.*;
 import java.io.*;
-import java.util.Stack;
 
 public class Main {
+
     static int N;
-    static String[] orders;
     static Stack<Integer> stack = new Stack<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
 
         N = Integer.parseInt(br.readLine());
-        orders = new String[N];
-        for (int i = 0; i < N; i++) orders[i] = br.readLine();
 
-        solve();
-    }
+        while (N-- > 0) {
+            st = new StringTokenizer(br.readLine());
+            String command = st.nextToken();
 
-    public static void solve() {
-        for (String str : orders) {
-            String[] strArray = str.split(" ");
-
-            if (strArray[0].equals("push")) {
-                stack.push(Integer.parseInt(strArray[1]));
-            } else if (strArray[0].equals("pop")) {
-                System.out.println(stack.isEmpty() ? -1 : stack.pop());
-            } else if (strArray[0].equals("size")) {
-                System.out.println(stack.size());
-            } else if (strArray[0].equals("empty")) {
-                System.out.println(stack.isEmpty() ? 1 : 0);
-            } else {
+            if (command.equals("push")) {
+                int value = Integer.parseInt(st.nextToken());
+                stack.push(value);
+            } else if (command.equals("top")) {
                 System.out.println(stack.isEmpty() ? -1 : stack.peek());
+            } else if (command.equals("pop")) {
+                if (stack.isEmpty()) {
+                    System.out.println("-1");
+                } else {
+                    System.out.println(stack.pop());
+                }
+            } else if (command.equals("size")) {
+                System.out.println(stack.size());
+            } else if (command.equals("empty")) {
+                System.out.println(stack.isEmpty() ? 1 : 0);
             }
         }
     }
