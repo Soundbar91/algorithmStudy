@@ -1,35 +1,34 @@
 import java.io.*;
-import java.util.Arrays;
-import java.util.Stack;
-import java.util.stream.IntStream;
+import java.util.*;
 
 public class Main {
+
     static int N;
-    static int[] tower;
-    static int[] result;
+    static Stack<int[]> stack = new Stack<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         N = Integer.parseInt(br.readLine());
-        tower = Arrays.stream(br.readLine().split(" "))
-                .mapToInt(Integer::parseInt).toArray();
-        result = new int[N];
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        solve();
-        br.close();
-    }
+        for (int i = 1; i <= N; i++) {
+            int value = Integer.parseInt(st.nextToken());
 
-    public static void solve() {
-        Stack<int[]> stack = new Stack<>();
-
-        for (int i = N - 1; i >= 0; i--) {
-            while (!stack.isEmpty() && stack.peek()[0] <= tower[i]) {
-                result[stack.pop()[1]] = i + 1;
+            while (!stack.isEmpty()) {
+                if (stack.peek()[1] >= value) {
+                    System.out.print(stack.peek()[0] + " ");
+                    break;
+                }
+                stack.pop();
             }
-            stack.push(new int[] {tower[i], i});
+
+            if (stack.isEmpty()) {
+                System.out.print("0 ");
+            }
+            stack.push(new int[] {i, value});
         }
 
-        IntStream.range(0, N).mapToObj(i -> result[i] + " ").forEach(System.out::print);
+        br.close();
     }
 }
