@@ -2,31 +2,33 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int N;
-    static int M;
-    static List<String> intKey = new ArrayList<>();
-    static Map<String, Integer> stringKey = new HashMap<>();
+
+    static int N, M;
+    static Map<String, Integer> names = new HashMap<>();
+    static Map<Integer, String> indexs = new HashMap<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
         StringTokenizer st = new StringTokenizer(br.readLine());
+        StringBuilder sb = new StringBuilder();
 
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
 
         for (int i = 0; i < N; i++) {
-            String str = br.readLine();
-            intKey.add(str);
-            stringKey.put(str, i + 1);
+            String name = br.readLine();
+            names.put(name, i + 1);
+            indexs.put(i + 1, name);
         }
 
         for (int i = 0; i < M; i++) {
             String input = br.readLine();
+
             if (Character.isDigit(input.charAt(0))) {
-                sb.append(intKey.get(Integer.parseInt(input) - 1)).append('\n');
+                int index = Integer.parseInt(input);
+                sb.append(indexs.get(index)).append('\n');
             } else {
-                sb.append(stringKey.get(input)).append('\n');
+                sb.append(names.get(input)).append('\n');
             }
         }
 
