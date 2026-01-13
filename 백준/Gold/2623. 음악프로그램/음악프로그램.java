@@ -5,6 +5,7 @@ public class Main {
 
     static int N, M;
     static int[] dist;
+    static int[] visited;
     static List<List<Integer>> graph = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
@@ -15,6 +16,7 @@ public class Main {
         M = Integer.parseInt(st.nextToken());
 
         dist = new int[N + 1];
+        visited = new int[N + 1];
         for (int i = 0; i <= N; i++) {
             graph.add(new ArrayList<>());
         }
@@ -32,13 +34,50 @@ public class Main {
             }
         }
 
+        if (hasCycle()) {
+            System.out.print(0);
+            return;
+        }
+
         solve();
         br.close();
     }
 
+    public static boolean hasCycle() {
+        for (int i = 1; i <= N; i++) {
+            if (visited[i] == 0) {
+                if (dfs(i)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean dfs(int node) {
+        if (visited[node] == 1) {
+            return true;
+        }
+
+        if (visited[node] == 2) {
+            return false;
+        }
+
+        visited[node] = 1;
+
+        for (int next : graph.get(node)) {
+            if (dfs(next)) {
+                return true;
+            }
+        }
+
+        visited[node] = 2;
+        return false;
+    }
+
     public static void solve() {
         Queue<Integer> queue = new LinkedList<>();
-        Queue<Integer> result = new LinkedList<>();
+        StringBuilder sb = new StringBuilder();
 
         for (int i = 1; i <= N; i++) {
             if (dist[i] == 0) {
@@ -48,7 +87,7 @@ public class Main {
 
         while (!queue.isEmpty()) {
             int cur = queue.poll();
-            result.add(cur);
+            sb.append(cur).append('\n');
 
             for (int i = 0; i < graph.get(cur).size(); i++) {
                 int next = graph.get(cur).get(i);
@@ -60,12 +99,6 @@ public class Main {
             }
         }
 
-        if (result.size() != N) {
-            System.out.print(0);
-        } else {
-            for (int i = 0; i < N; i++) {
-                System.out.println(result.poll());
-            }
-        }
+        System.out.print(sb);
     }
 }
