@@ -8,6 +8,7 @@ public class Main {
     static int[] dist;
     static int[] dp;
     static List<List<Integer>> graph;
+    static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -48,6 +49,7 @@ public class Main {
             solve();
         }
 
+        System.out.print(sb);
         br.close();
     }
 
@@ -62,6 +64,11 @@ public class Main {
 
         while (!queue.isEmpty()) {
             int cur = queue.poll();
+            if (cur == W) {
+                sb.append(dp[cur]).append("\n");
+                break;
+            }
+
 
             for (int next : graph.get(cur)) {
                 dist[next]--;
@@ -72,7 +79,5 @@ public class Main {
                 }
             }
         }
-        
-        System.out.println(dp[W]);
     }
 }
