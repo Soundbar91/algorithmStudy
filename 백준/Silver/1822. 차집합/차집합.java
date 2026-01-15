@@ -1,51 +1,55 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
-class Main {
-    static int A, B;
-    static Set<Integer> setA = new HashSet<>(), setB = new HashSet<>();
+public class Main {
+
+    static int nA, nB;
+    static int[] A;
+    static int[] B;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        A = Integer.parseInt(st.nextToken());
-        B = Integer.parseInt(st.nextToken());
+        nA = Integer.parseInt(st.nextToken());
+        nB = Integer.parseInt(st.nextToken());
+
+        A = new int[nA];
+        B = new int[nB];
 
         st = new StringTokenizer(br.readLine());
-        while (A-- > 0) {
-            setA.add(Integer.parseInt(st.nextToken()));
+        for (int i = 0; i < nA; i++) {
+            A[i] = Integer.parseInt(st.nextToken());
         }
 
         st = new StringTokenizer(br.readLine());
-        while (B-- > 0) {
-            setB.add(Integer.parseInt(st.nextToken()));
+        for (int i = 0; i < nB; i++) {
+            B[i] = Integer.parseInt(st.nextToken());
         }
+
+        Arrays.sort(A);
+        Arrays.sort(B);
 
         solve();
         br.close();
     }
 
     public static void solve() {
-        List<Integer> result = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
+        int count = 0;
 
-        for (int i : setA) {
-            if (!setB.contains(i)) result.add(i);
+        for (int i = 0; i < nA; i++) {
+            if (Arrays.binarySearch(B, A[i]) < 0) {
+                count++;
+                sb.append(A[i]).append(" ");
+            }
         }
 
-        if (result.isEmpty())
-            System.out.print("0");
-        else {
-            result.sort(null);
-
-            System.out.println(result.size());
-            result.forEach(v -> System.out.print(v + " "));
+        if (count == 0) {
+            System.out.print(0);
+        } else {
+            System.out.println(count);
+            System.out.print(sb);
         }
     }
 }
