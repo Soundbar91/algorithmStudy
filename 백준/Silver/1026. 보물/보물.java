@@ -1,11 +1,10 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    static int N, result = 0;
+
+    static int N, S;
+    static Number[] numbers;
     static int[] A;
     static int[] B;
 
@@ -16,6 +15,7 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         A = new int[N];
         B = new int[N];
+        numbers = new Number[N];
 
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
@@ -25,16 +25,32 @@ public class Main {
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
             B[i] = Integer.parseInt(st.nextToken());
+            numbers[i] = new Number(i, B[i]);
         }
 
         Arrays.sort(A);
-        Arrays.sort(B);
+        Arrays.sort(numbers);
 
         for (int i = 0; i < N; i++) {
-            result += (A[N - i - 1] * B[i]);
+            S += (A[i] * B[numbers[i].index]);
         }
 
-        System.out.print(result);
+        System.out.print(S);
         br.close();
+    }
+
+    public static class Number implements Comparable<Number> {
+        int index;
+        int value;
+
+        public Number(int index, int value) {
+            this.index = index;
+            this.value = value;
+        }
+
+        @Override
+        public int compareTo(Number o) {
+            return o.value - this.value;
+        }
     }
 }
