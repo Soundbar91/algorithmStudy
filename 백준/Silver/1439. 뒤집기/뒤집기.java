@@ -9,20 +9,17 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         String S = br.readLine();
+        if (S.charAt(0) == '0') {
+            zero++;
+        } else if  (S.charAt(0) == '1') {
+            one++;
+        }
 
-        for (int i = 1; i < S.length(); i++) {
-            if (i == S.length() - 1) {
-                if (S.charAt(i) == '0') {
+        for (int i = 0; i < S.length() - 1; i++) {
+            if (S.charAt(i) != S.charAt(i + 1)) {
+                if (S.charAt(i + 1) == '0') {
                     zero++;
-                } else if  (S.charAt(i) == '1') {
-                    one++;
-                }
-            }
-            
-            if (S.charAt(i) != S.charAt(i - 1)) {
-                if (S.charAt(i - 1) == '0') {
-                    zero++;
-                } else if (S.charAt(i - 1) == '1') {
+                } else if (S.charAt(i + 1) == '1') {
                     one++;
                 }
             }
