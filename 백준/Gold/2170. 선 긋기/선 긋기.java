@@ -13,8 +13,8 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
-            int start = Integer.parseInt(st.nextToken()) + 1_000_000_000;
-            int end = Integer.parseInt(st.nextToken()) + 1_000_000_000;
+            int start = Integer.parseInt(st.nextToken());
+            int end = Integer.parseInt(st.nextToken());
 
             lines.add(new Line(start, end));
         }
