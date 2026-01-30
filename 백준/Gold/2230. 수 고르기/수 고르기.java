@@ -24,28 +24,19 @@ public class Main {
 
     public static void solve() {
         Arrays.sort(nums);
+        int left = 0, right = 0;
 
-        for (int i = 0; i < N; i++) {
-            lowerBound(i);
+        while (left < N && right < N) {
+            int calc = Math.abs(nums[right] - nums[left]);
+
+            if (calc < M) {
+                right++;
+            } else {
+                left++;
+                result = Math.min(result, calc);
+            }
         }
 
         System.out.print(result);
-    }
-
-    public static void lowerBound(int start) {
-        int left = start;
-        int right = N - 1;
-
-        while (left <= right) {
-            int mid = left + ((right - left) / 2);
-            int calc = Math.abs(nums[start] - nums[mid]);
-
-            if (calc >= M) {
-                right = mid - 1;
-                result = Math.min(result, calc);
-            } else {
-                left = mid + 1;
-            }
-        }
     }
 }
