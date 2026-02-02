@@ -1,49 +1,53 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
-class Main {
+public class Main {
+
     static int N;
-    static int[] parent;
-    static boolean[] visited;
-    static List<List<Integer>> map = new ArrayList<>();
+    static int[] parents;
+    static List<List<Integer>> graph = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        N = Integer.parseInt(br.readLine());
-        parent = new int[N + 1];
-        visited = new boolean[N + 1];
-        for (int i = 0; i <= N; i++) map.add(new ArrayList<>());
+        N = Integer.parseInt(st.nextToken());
+
+        parents = new int[N + 1];
+        for (int i = 0; i <= N; i++) {
+            graph.add(new ArrayList<>());
+        }
 
         for (int i = 0; i < N - 1; i++) {
             st = new StringTokenizer(br.readLine());
+            int x = Integer.parseInt(st.nextToken());
+            int y = Integer.parseInt(st.nextToken());
 
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-
-            map.get(a).add(b);
-            map.get(b).add(a);
+            graph.get(x).add(y);
+            graph.get(y).add(x);
         }
 
-        dfs(1);
-        for (int i = 2; i <= N; i++) System.out.println(parent[i]);
+        solve();
         br.close();
     }
 
-    public static void dfs(int startPoint) {
-        visited[startPoint] = true;
+    public static void solve() {
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(1);
 
-        for (int nextPoint : map.get(startPoint)) {
-            if (!visited[nextPoint]) {
-                parent[nextPoint] = startPoint;
-                dfs(nextPoint);
+        while (!queue.isEmpty()) {
+            int cur = queue.poll();
+
+            for (int next : graph.get(cur)) {
+                if (parents[next] == 0) {
+                    parents[next] = cur;
+                    queue.add(next);
+                }
             }
+        }
+
+        for (int i = 2; i <= N; i++) {
+            System.out.println(parents[i]);
         }
     }
 }
