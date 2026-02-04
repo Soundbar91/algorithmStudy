@@ -4,8 +4,7 @@ import java.util.*;
 public class Main {
 
     static int N, M;
-    static int[] size;
-    static int[] parents;
+    static boolean[] visited;
     static List<List<Line>> graph = new LinkedList<>();
 
     public static void main(String[] args) throws IOException {
@@ -35,32 +34,34 @@ public class Main {
             int cur = Integer.parseInt(st.nextToken());
             int dest = Integer.parseInt(st.nextToken());
 
-            size = new int[N + 1];
-            parents = new int[N + 1];
-            solve(cur, dest, 0);
-            System.out.println(size[dest]);
+            System.out.println(solve(cur, dest));
         }
 
         br.close();
     }
 
-    public static void solve(int cur, int dest, int weight) {
-        if (cur == dest) {
-            return;
-        }
+    public static int solve(int cur, int dest) {
+        Queue<Line> queue = new LinkedList<>();
+        visited = new boolean[N + 1];
+        queue.add(new Line(cur, 0));
+        visited[cur] = true;
 
-        size[cur] += weight;
-        for (Line next : graph.get(cur)) {
-            if (parents[cur] == next.dest) {
-                continue;
-            }
+        while (!queue.isEmpty()) {
+            Line line = queue.poll();
 
-            if (parents[next.dest] == 0) {
-                parents[next.dest] = cur;
-                solve(next.dest, dest, size[cur] + next.weight);
-                size[next.dest] += (size[cur] + next.weight);
+            if (line.dest == dest) {
+                return line.weight;
+            }
+            
+            for (Line next : graph.get(line.dest)) {
+                if (!visited[next.dest]) {
+                    visited[next.dest] = true;
+                    queue.add(new Line(next.dest, next.weight + line.weight));
+                }
             }
         }
+        
+        return -1;
     }
 
     public static class Line {
