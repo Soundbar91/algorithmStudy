@@ -31,8 +31,7 @@ public class Main {
             graph.get(U).add(V);
             graph.get(V).add(U);
         }
-
-        parents[R] = -1;
+        
         makeTree(R);
 
         for (int i = 0; i < Q; i++) {
@@ -45,7 +44,7 @@ public class Main {
     public static void makeTree(int cur) {
         size[cur] = 1;
         for (int next : graph.get(cur)) {
-            if (parents[next] == cur) {
+            if (parents[cur] == next) {
                 continue;
             }
 
