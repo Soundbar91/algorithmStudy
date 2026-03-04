@@ -45,7 +45,7 @@ public class Main {
         for (int i = 0; i < M; i++) {
             boolean flag = false;
             for (int peopleNum : parties.get(i)) {
-                if (knowTruePeoples.contains(find(parents[peopleNum]))) {
+                if (knowTruePeoples.contains(find(peopleNum))) {
                     flag = true;
                     break;
                 }
@@ -62,7 +62,7 @@ public class Main {
 
     public static int find(int x) {
         if (parents[x] == x) return x;
-        else return find(parents[x]);
+        else return parents[x] = find(parents[x]);
     }
 
     public static void union(int x, int y) {
