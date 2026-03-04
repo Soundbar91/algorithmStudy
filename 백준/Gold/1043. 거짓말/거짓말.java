@@ -1,26 +1,12 @@
 import java.io.*;
 import java.util.*;
 
-/**
- * 과장을 해서 말하고, 몇몇 사람들은 그 이야기의 진실을 안다.
- * 해당 사람들이 오면 진실을 말한다.
- * 어떤 파티에서 진실, 어떤 파티에서 과장 -> 거짓말쟁이
- * 모든 파티에 참가, 거짓말쟁이로 알려지지 않으면서 과장된 이야기를 할 수 있는 파티 개수
- *
- * 진실 확인 여부를 전파해야하는데
- * 차감을 해야겠네
- * 각 사람이 참여하는 파티
- * 누구에 의해 알게 됐다 ?
- */
-
 public class Main {
 
     static int N, M;
-    static boolean[] visited;
-    static boolean[] result;
-    static Queue<Integer> queue = new LinkedList<>();
+    static int[] parents;
     static List<List<Integer>> parties = new ArrayList<>();
-    static List<List<Integer>> graph = new ArrayList<>();
+    static Set<Integer> knowTruePeoples = new HashSet<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -29,61 +15,66 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
 
-        visited = new boolean[M + 1];
-        result = new boolean[N + 1];
+        parents = new int[N + 1];
         for (int i = 0; i <= N; i++) {
-            graph.add(new ArrayList<>());
+            parents[i] = i;
         }
-        for (int i = 0; i <= M; i++) {
+        for (int i = 0; i < M; i++) {
             parties.add(new ArrayList<>());
         }
 
         st = new StringTokenizer(br.readLine());
         int knowTruePeopleCount = Integer.parseInt(st.nextToken());
         for (int i = 0; i < knowTruePeopleCount; i++) {
-            queue.add(Integer.parseInt(st.nextToken()));
+            knowTruePeoples.add(Integer.parseInt(st.nextToken()));
         }
 
-        for (int i = 1; i <= M; i++) {
+        for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
-
-            int joinPeopleCount = Integer.parseInt(st.nextToken());
-            for (int j = 0; j < joinPeopleCount; j++) {
-                int peopleNum = Integer.parseInt(st.nextToken());
-                parties.get(i).add(peopleNum);
-                graph.get(peopleNum).add(i);
+            int joinPartyPeopleCount = Integer.parseInt(st.nextToken());
+            int temp1 = Integer.parseInt(st.nextToken());
+            parties.get(i).add(temp1);
+            for (int j = 1; j < joinPartyPeopleCount; j++) {
+                int temp2 = Integer.parseInt(st.nextToken());
+                union(temp1, temp2);
+                parties.get(i).add(temp2);
             }
         }
 
-        solve();
-        br.close();
-    }
-
-    public static void solve() {
-        bfs();
-        countResult();
-    }
-
-    public static void bfs() {
-        while (!queue.isEmpty()) {
-            int cur = queue.poll();
-
-            for (int next : graph.get(cur)) {
-                if (!visited[next]) {
-                    visited[next] = true;
-                    queue.addAll(parties.get(next));
+        int count = 0;
+        for (int i = 0; i < M; i++) {
+            boolean flag = false;
+            for (int peopleNum : parties.get(i)) {
+                if (knowTruePeoples.contains(find(parents[peopleNum]))) {
+                    flag = true;
+                    break;
                 }
             }
-        }
-    }
 
-    public static void countResult() {
-        int count = 0;
-        for (int i = 1; i <= M; i++) {
-            if (!visited[i]) {
+            if (!flag) {
                 count++;
             }
         }
+
         System.out.print(count);
+        br.close();
+    }
+
+    public static int find(int x) {
+        if (parents[x] == x) return x;
+        else return find(parents[x]);
+    }
+
+    public static void union(int x, int y) {
+        int X = find(x);
+        int Y = find(y);
+
+        if (knowTruePeoples.contains(Y)) {
+            int temp = X;
+            X = Y;
+            Y = temp;
+        }
+
+        parents[Y] = X;
     }
 }
