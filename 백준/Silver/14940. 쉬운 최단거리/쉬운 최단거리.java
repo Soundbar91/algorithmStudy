@@ -1,13 +1,9 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
-class Main {
-    static int n, m;
-    static int[] start = new int[2];
+public class Main {
+
+    static int n, m, x, y;
     static int[] dx = {0, 0, -1, 1};
     static int[] dy = {1, -1, 0, 0};
     static int[][] map;
@@ -20,6 +16,7 @@ class Main {
 
         n = Integer.parseInt(st.nextToken());
         m = Integer.parseInt(st.nextToken());
+
         map = new int[n][m];
         dist = new int[n][m];
         visited = new boolean[n][m];
@@ -29,48 +26,62 @@ class Main {
             for (int j = 0; j < m; j++) {
                 map[i][j] = Integer.parseInt(st.nextToken());
                 if (map[i][j] == 2) {
-                    start[0] = i;
-                    start[1] = j;
+                    x = i;
+                    y = j;
                 }
             }
         }
 
-        bfs();
-        print();
+        solve();
         br.close();
     }
 
-    public static void bfs() {
+    public static void solve() {
+        dfs();
+        print();
+    }
+
+    public static void dfs() {
         Queue<int[]> queue = new LinkedList<>();
-        queue.add(start);
+        queue.offer(new int[]{x, y});
+        visited[x][y] = true;
 
         while (!queue.isEmpty()) {
             int[] cur = queue.poll();
-
-            if (visited[cur[0]][cur[1]]) continue;
-            visited[cur[0]][cur[1]] = true;
 
             for (int i = 0; i < 4; i++) {
                 int nx = cur[0] + dx[i];
                 int ny = cur[1] + dy[i];
 
-                if (nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
-                if (visited[nx][ny]) continue;
-                if (map[nx][ny] == 0) continue;
+                if (!isValid(nx, ny) || map[nx][ny] != 1 || visited[nx][ny]) {
+                    continue;
+                }
 
-                queue.add(new int[] {nx, ny});
+                visited[nx][ny] = true;
                 dist[nx][ny] = dist[cur[0]][cur[1]] + 1;
+                queue.offer(new int[]{nx, ny});
             }
         }
     }
 
     public static void print() {
+        StringBuilder sb = new StringBuilder();
+
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                if (map[i][j] == 1 && !visited[i][j]) System.out.print(-1 + " ");
-                else System.out.print(dist[i][j] + " ");
+                if (map[i][j] == 1 && !visited[i][j]) {
+                    sb.append(-1).append(" ");
+                } else {
+                    sb.append(dist[i][j]).append(" ");
+                }
             }
-            System.out.println();
+            sb.append('\n');
         }
+
+        System.out.print(sb);
+    }
+
+    public static boolean isValid(int x, int y) {
+        return x >= 0 && x < n && y >= 0 && y < m;
     }
 }
