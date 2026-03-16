@@ -39,8 +39,6 @@ public class Main {
     }
 
     public static void solve() {
-        // dp[0][0] = cost[0][0];
-        // dp[0][1] = cost[0][0] + cost[0][1];
         dp[0][1] = cost[0][1];
         dp[0][2] = cost[0][1] + cost[0][2];
 
