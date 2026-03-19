@@ -1,14 +1,6 @@
 import java.io.*;
 import java.util.*;
 
-/**
- * 1    2   3   4   5   6   7   8   9   10
- * 3    6   9   12  15  18  21  24  27  30
- * 3    2   5   4   7   6   9   8   11  10
- *
- *
- */
-
 public class Main {
 
     static int C, N;
@@ -23,7 +15,7 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
 
         infos = new Info[N];
-        dp = new int[20001];
+        dp = new int[C + 101];
         Arrays.fill(dp, 987654321);
         dp[0] = 0;
 
@@ -43,12 +35,12 @@ public class Main {
         for (int i = 0; i < N; i++) {
             Info info = infos[i];
 
-            for (int j = info.people; j <= 20000; j++) {
+            for (int j = info.people; j < dp.length; j++) {
                 dp[j] = Math.min(dp[j], dp[j - info.people] + info.cost);
             }
         }
 
-        for (int i = C; i <= 20000; i++) {
+        for (int i = C; i < dp.length; i++) {
             dp[C] = Math.min(dp[C], dp[i]);
         }
 
