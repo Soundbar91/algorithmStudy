@@ -15,85 +15,49 @@ import java.util.*;
 
 public class Main {
 
-    static int N, min = 987654321, max = -1, count = 0, cnt;
+    static int max = -1, min = 987654321;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        String input = br.readLine();
-        N = Integer.parseInt(input);
-
-        cnt = calc(N);
-        count = cnt;
-
-        if (input.length() == 1) {
-            if (N % 2 != 0) {
-                System.out.print("0 1");
-            } else {
-                System.out.print("0 0");
-            }
-        } else if (input.length() == 2) {
-            calcIfNumLenEqualsTwo(N);
-            System.out.print(count + " " + count);
-        } else {
-            solve(N, 0);
-            System.out.print(min + " " + max);
-        }
-
+        solve(Integer.parseInt(br.readLine()), 0);
+        System.out.print(min + " " + max);
         br.close();
     }
 
-    public static void solve(int num, int depth) {
+    public static void solve(int num, int count) {
+        count += calc(num);
+
         if (num < 10) {
-            return ;
+            max = Math.max(max, count);
+            min = Math.min(min, count);
         } else if (num < 100) {
-            solve(calcIfNumLenEqualsTwo(num), depth + 1);
+           int n1 = num / 10;
+           int n2 = num % 10;
+           solve(n1 + n2, count);
         } else {
-            String n = String.valueOf(num);
+            String value = String.valueOf(num);
+            for (int i = 0; i < value.length() - 2; i++) {
+                for (int j = i + 1; j < value.length() - 1; j++) {
+                    int n1 = Integer.parseInt(value.substring(0, i + 1));
+                    int n2 = Integer.parseInt(value.substring(i + 1, j + 1));
+                    int n3 = Integer.parseInt(value.substring(j + 1));
 
-            for (int i = 1; i < n.length() - 1; i++) {
-                for (int j = i + 1; j < n.length(); j++) {
-                    solve(calcIfNumLenOverTwo(num, i, j), depth + 1);
-
-                    if (depth == 0) {
-                        min = Math.min(min, count);
-                        max = Math.max(max, count);
-                        count = cnt;
-                    }
+                    solve(n1 + n2 + n3, count);
                 }
             }
         }
     }
 
-    public static int calcIfNumLenEqualsTwo(int num) {
-        int n1 = num % 10;
-        int n2 = num / 10;
-        int n3 = n1 + n2;
-        count += calc(n3);
-
-        return n3;
-    }
-
-    public static int calcIfNumLenOverTwo(int num, int idx1, int idx2) {
-        int n1 = (int)(num % (Math.pow(10, idx1)));
-        int n2 = (int)((int)(num / (Math.pow(10, idx1))) % (Math.pow(10, idx2 - idx1)));
-        int n3 = (int)((int)(num / (Math.pow(10, idx1))) / (Math.pow(10, idx2 - idx1)));
-        int n4 = n1 + n2 + n3;
-        count += calc(n4);
-
-        return n4;
-    }
-
     public static int calc(int num) {
-        String n = String.valueOf(num);
-        int calc = 0;
+        int count = 0;
+        int temp = num;
 
-        for (int i = 0; i < n.length(); i++) {
-            if (n.charAt(i) % 2 != 0) {
-                calc++;
-            }
+        while (temp > 0) {
+            count += (temp % 10 % 2 != 0 ? 1 : 0);
+            temp /= 10;
         }
 
-        return calc;
+        return count;
     }
 }
