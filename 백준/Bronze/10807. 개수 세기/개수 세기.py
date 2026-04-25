@@ -1,0 +1,5 @@
+Arr_Size = int(input())
+Arr = list(map(int, input().split()))
+Num = int(input())
+Count = Arr.count(Num)
+print(Count)
